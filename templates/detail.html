@@ -5,7 +5,12 @@
 
 <head>
     <!-- Webpage Title -->
-    <title>Eat_cloud</title>
+    <title>Detail | eat cloud</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <meta property="og:title" content="eat cloud - 맛집 저장소"/>
+    <meta property="og:description" content="세상의 모든 맛집을 eat cloud에서 확인하세요!"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
