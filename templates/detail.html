@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+
+</html>
+
+<head>
+    <!-- Webpage Title -->
+    <title>Eat_cloud</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <script src="https://kit.fontawesome.com/fc2bb77ae0.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <style>
+        * {
+            font-family: 'Do Hyeon', sans-serif;
+        }
+
+        .navbar {
+            font-size: 20px;
+            font-weight: bold;
+
+        }
+
+        .card {
+            width: 50%;
+            margin: auto;
+            padding: 50px;
+        }
+
+        .restaurant_name {
+            color: royalblue;
+            font-weight: bold;
+            font-size: 30px;
+        }
+
+        .like {
+            color: red;
+        }
+
+        .is-sparta {
+            color: #349ae8 !important;
+        }
+
+        .review-making-box {
+            width: 50%;
+            margin: auto;
+            padding: 50px;
+        }
+    </style>
+    <script>
+        $(document).ready(function (){
+            show()
+        });
+
+        function sign_out() {
+                $.removeCookie('mytoken', {path: '/'});
+                alert('로그아웃 완료!')
+                window.location.replace("/")
+            }
+
+
+        function posting() {
+            let review = $("#textarea-post").val()
+            let store = $("#title").text()
+            console.log(review, store)
+            $.ajax({
+                type: "POST",
+                url: "/post",
+                data: {"review_give": review, "store": store},
+                success: function (response) {
+                    alert(response["msg"]);
+                    if (response["msg"] == '리뷰를 저장했습니다.') {
+                        window.location.reload()
+                    } else if (response["msg"] == "로그인 해주세요") {
+                        window.location.replace('/login')
+                    } else if (response["msg"] == '로그인 시간이 만료됐습니다.') {
+                        window.location.replace('/login')
+                    }
+                }
+            })
+        }
+
+
+        function like() {
+            let store = $("#title").text()
+            $.ajax({
+                type: "POST",
+                url: "/like",
+                data: {"store": store},
+                success: function (response) {
+                    if (response["msg"] == null){
+                        window.location.reload()
+                    } else {
+                        alert(response["msg"])
+
+            }
+
+          }
+        })
+
+        }
+
+        function show() {
+            let store = $("#title").text()
+            $.ajax({
+                type: "GET",
+                url: "/show",
+                data: {"store" : store},
+                success: function (response) {
+                    let likes = response["like"]
+                    let temp_html = `<button onclick=like() class="button"><span class="like"><i class="fas fa-heart">${likes}</i></span>
+                                    </button>
+                                    <button onclick="location.href='#review-box'" class="button is-info"> 리뷰 쓰기 <i
+                                    class="fas fa-pencil-alt"></i></button>`
+                    $("#col2").append(temp_html)
+                }
+            })
+
+        }
+
+
+    </script>
+
+</head>
+
+<body>
+<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/" style="margin-right: 15px;">
+            <img style="width: 50px; height: 30px;" src="{{ url_for('static', filename='logo_eatcloud.png') }}">
+            <strong class="is-sparta"
+                    style="font-family: 'Do Hyeon', sans-serif; font-size: larger;">eat cloud</strong>
+        </a>
+    </div>
+</nav>
+
+<section class="section">
+    <div class="card">
+        <div class="card-image">
+            {% for store in stores %}
+                <figure class="image is-4by3">
+                    <img src={{ store.image_url }}
+                                 alt="Placeholder image">
+                </figure>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <span id="restaurant_nm" class="restaurant_name">{{ restaurant_nm }}</span>
+                    </div>
+                    <div class="col2" id="col2">
+                    </div>
+                    <br><br>
+                </div>
+                <span class="title" id="title">{{ store.title }}</span>
+                <br><br>
+
+                <span class="address">주소:</span>
+                <span class="detail_address">{{ store.address }}</span>
+                <br>
+
+                <span class="type">음식 종류:<span class="food_type">{{ store.food_type }}</span>
+                <br>
+
+                <span class="price">가격: </span>
+                <span class="detail_price">{{ store.price }}</span>
+                <br><br>
+
+                <span class="hour">영업시간: </span>
+                <span class="detail_hours">{{ store.open_hour }}</span>
+                <br>
+
+                <span class="holiday">쉬는 시간: </span>
+                <span class="detail_holiday">{{ store.holiday }}</span>
+                <br>
+
+                <span class="park">주차: </span>
+                <span class="detail_park">{{ store.park }}</span>
+                <br><br>
+
+                <span class="menu">메뉴</span>
+
+                <ul class="menu_list">
+            {% for i in store.menu %}
+                {% set food_name  = i[0] %}
+                {% set food_price = i[1] %}
+                <li>{{ food_name }} : {{ food_price }}</li>
+            {% endfor %}
+        </ul>
+            {% endfor %}
+    </div>
+
+</section>
+
+<div class="box review-making-box">
+    <div class="field">
+        <label class="label review-box"><i class="fas fa-pencil-alt"> </i>리뷰 쓰기 </label>
+        <div class="control">
+            <textarea class="textarea" id="textarea-post" placeholder="리뷰를 남겨주세요!"></textarea>
+        </div>
+    </div>
+    <div class="field is-grouped">
+        <div class="control">
+            <button id="review-box" onclick="posting()" class="button is-info">저장</button>
+        </div>
+    </div>
+    <section class="section">
+        <div id="post-box" class="container">
+            {% for review in reviews %}
+                <div class="box">
+                    {{ review.time }}
+                    <div id="review-box" class="media-content">
+                        <div class="review-a">
+                            {{ review.user.username }}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp{{ review.review }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</body>
+
+</html>

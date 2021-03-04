@@ -1,0 +1,43 @@
+body {
+    background-color: RGBA(232, 52, 78, 0.2);
+    min-height: 100vh;
+		padding-top: 3.25rem;
+}
+
+.section {
+    padding: 1rem 1.5rem;
+    max-width: 750px;
+    margin: auto;
+}
+
+.is-sparta {
+    color: #349ae8 !important;
+    font-family: 'Gamja Flower', cursive;
+}
+
+.button.is-sparta {
+    background-color: #349ae8;
+    border-color: transparent;
+    color: #fff !important;
+}
+
+.button.is-sparta.is-outlined {
+    background-color: transparent;
+    border-color: #349ae8;
+    color: #349ae8 !important;
+}
+
+.modal-content {
+    width: 600px;
+    max-width: 80%;
+}
+
+input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.image img {
+    object-fit:cover;
+    width:100%;
+    height:100%;
+}
